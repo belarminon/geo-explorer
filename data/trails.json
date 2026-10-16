@@ -1,0 +1,26 @@
+{
+  "technologies": [
+    {
+      "id": "dotnet",
+      "name": ".NET / C#",
+      "levels": ["iniciante", "intermediario", "avancado"],
+      "modules": ["Sintaxe C#", "ASP.NET Core Web API", "Entity Framework Core", "Arquitetura Limpa"],
+      "challenges": {
+        "iniciante": "Crie uma API RESTful simples que gerencie uma lista de tarefas (CRUD).",
+        "intermediario": "Implemente autenticação JWT em uma Web API ASP.NET Core utilizando ASP.NET Identity.",
+        "avancado": "Desenvolva uma arquitetura de microsserviços orientada a eventos utilizando MassTransit e RabbitMQ."
+      }
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "levels": ["iniciante", "intermediario", "avancado"],
+      "modules": ["Fundamentos", "FastAPI / Django", "Tratamento de Dados", "Testes Unitários"],
+      "challenges": {
+        "iniciante": "Crie um script CLI em Python para organizar arquivos em pastas por extensão.",
+        "intermediario": "Construa uma API assíncrona com FastAPI utilizando Pydantic e SQLAlchemy.",
+        "avancado": "Crie uma pipeline de processamento de dados usando Pandas e Celery para tarefas assíncronas."
+      }
+    }
+  ]
+}

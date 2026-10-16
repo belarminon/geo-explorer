@@ -1,0 +1,45 @@
+{
+  "name": "geo-explorer",
+  "version": "1.0.0",
+  "description": "Explorador de trilhas de aprendizagem, desafios de código e servidor MCP.",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "geo-explorer": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "tsx src/index.ts",
+    "mcp": "tsx src/mcp/server.ts",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "mcp",
+    "dio",
+    "cli",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.1"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/belarminon/geo-explorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/belarminon/geo-explorer/issues"
+  },
+  "homepage": "https://github.com/belarminon/geo-explorer#readme"
+}
