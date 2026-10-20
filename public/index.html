@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geo-Explorer — Trilhas de Aprendizagem</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #178b83;
+      --accent-light: #1fada3;
+      --accent-dim: rgba(23,139,131,.15);
+      --yellow: #d29922;
+      --purple: #8957e5;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo-icon { font-size: 26px; line-height: 1; }
+    .logo-text { font-weight: 700; font-size: 18px; color: var(--accent-light); letter-spacing: .02em; }
+    .logo-tag  { font-size: 11px; color: var(--muted); background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 56px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; line-height: 1.15; }
+    .hero h1 span { color: var(--accent-light); }
+    .hero p { color: var(--muted); margin-top: 16px; font-size: 17px; }
+
+    /* ── NAV TABS ── */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 24px 48px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .tab:hover { border-color: var(--accent); color: var(--accent-light); }
+    .tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-light); }
+
+    /* ── SECTIONS ── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+
+    /* ── TRAIL CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color .18s, transform .18s;
+      cursor: pointer;
+      text-align: left;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .card.selected { border-color: var(--accent-light); background: var(--accent-dim); }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .card-icon { font-size: 28px; }
+    .card-title { font-weight: 700; font-size: 17px; }
+    .card-badge {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px; margin-right: 6px; margin-top: 4px;
+    }
+    .badge-iniciante   { background: rgba(35,134,54,.2);  color: #3fb950; border: 1px solid rgba(35,134,54,.4);  }
+    .badge-intermediario { background: rgba(210,153,34,.2); color: #e3b341; border: 1px solid rgba(210,153,34,.4); }
+    .badge-avancado    { background: rgba(137,87,229,.2); color: #bc8cff; border: 1px solid rgba(137,87,229,.4); }
+    .card-modules { margin-top: 14px; }
+    .card-modules p { font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+    .module-pill {
+      display: inline-block; font-size: 12px; padding: 3px 10px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 20px; margin: 3px 3px 0 0; color: var(--muted);
+    }
+
+    /* ── CHALLENGE SECTION ── */
+    .challenge-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+    .filter-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .filter-row select {
+      flex: 1; min-width: 160px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); border-radius: 8px; padding: 10px 14px;
+      font-size: 14px; cursor: pointer; outline: none;
+      transition: border-color .18s;
+    }
+    .filter-row select:hover, .filter-row select:focus { border-color: var(--accent); }
+    .btn {
+      padding: 10px 24px; border-radius: 8px; border: none;
+      background: var(--accent); color: #fff; font-size: 14px;
+      font-weight: 700; cursor: pointer; transition: background .18s;
+      letter-spacing: .02em;
+    }
+    .btn:hover { background: var(--accent-light); }
+    .challenge-box {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .challenge-box.visible { display: block; }
+    .challenge-box .label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--accent-light); margin-bottom: 12px;
+    }
+    .challenge-box p { font-size: 16px; line-height: 1.7; color: var(--text); }
+
+    /* ── CERTIFICATE SECTION ── */
+    .cert-container {
+      max-width: 700px; margin: 0 auto; padding: 0 24px 64px;
+    }
+    .cert-form {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px; margin-bottom: 28px;
+    }
+    .cert-form label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--muted); margin-bottom: 6px; margin-top: 18px;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .cert-form label:first-child { margin-top: 0; }
+    .cert-form input, .cert-form select {
+      width: 100%; background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 8px; padding: 10px 14px;
+      font-size: 15px; outline: none; transition: border-color .18s;
+    }
+    .cert-form input:focus, .cert-form select:focus { border-color: var(--accent); }
+    .cert-form .btn { margin-top: 24px; width: 100%; padding: 12px; font-size: 15px; }
+
+    .cert-preview {
+      display: none;
+      border: 3px double var(--accent);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 40px 32px;
+      text-align: center;
+    }
+    .cert-preview.visible { display: block; }
+    .cert-brand { color: var(--accent-light); font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 24px; }
+    .cert-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .cert-sub { color: var(--muted); font-size: 15px; margin-bottom: 12px; }
+    .cert-name { color: var(--accent-light); font-size: 30px; font-weight: 700; margin: 12px 0; }
+    .cert-trail { font-size: 20px; font-weight: 600; margin-bottom: 28px; }
+    .cert-meta { font-size: 11px; color: var(--muted); line-height: 2; word-break: break-all; }
+    .cert-note { margin-top: 20px; font-size: 12px; color: var(--muted); font-style: italic; }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center; color: var(--muted); padding: 48px 24px;
+      font-size: 15px;
+    }
+    .empty span { display: block; font-size: 40px; margin-bottom: 12px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    footer a { color: var(--accent-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo-icon">🌍</span>
+  <span class="logo-text">Geo-Explorer</span>
+  <span class="logo-tag">trilhas · desafios · certificados</span>
+</header>
+
+<section class="hero">
+  <h1>Explore trilhas,<br><span>evolua seus conhecimentos</span></h1>
+  <p>Consulte planos de estudo, receba desafios de código por nível e gere seu certificado fictício de conclusão.</p>
+</section>
+
+<div class="tabs">
+  <button class="tab active" data-tab="trails">📚 Trilhas</button>
+  <button class="tab" data-tab="challenges">🎯 Desafios</button>
+  <button class="tab" data-tab="certificate">🏆 Certificado</button>
+</div>
+
+<!-- ── TRILHAS ── -->
+<div id="trails" class="section active">
+  <div class="grid" id="trails-grid"></div>
+</div>
+
+<!-- ── DESAFIOS ── -->
+<div id="challenges" class="section">
+  <div class="challenge-container">
+    <div class="filter-row">
+      <select id="ch-tech">
+        <option value="">Selecione a tecnologia…</option>
+      </select>
+      <select id="ch-level">
+        <option value="">Selecione o nível…</option>
+        <option value="iniciante">Iniciante</option>
+        <option value="intermediario">Intermediário</option>
+        <option value="avancado">Avançado</option>
+      </select>
+      <button class="btn" id="ch-btn">Ver Desafio</button>
+    </div>
+    <div class="challenge-box" id="challenge-box">
+      <div class="label" id="challenge-label"></div>
+      <p id="challenge-text"></p>
+    </div>
+    <div class="empty" id="challenge-empty">
+      <span>🎯</span>Selecione uma tecnologia e um nível para ver o desafio.
+    </div>
+  </div>
+</div>
+
+<!-- ── CERTIFICADO ── -->
+<div id="certificate" class="section">
+  <div class="cert-container">
+    <div class="cert-form">
+      <label for="cert-name">Seu nome completo</label>
+      <input type="text" id="cert-name" placeholder="Ex: Ada Lovelace" maxlength="80" />
+
+      <label for="cert-tech">Trilha concluída</label>
+      <select id="cert-tech">
+        <option value="">Selecione a tecnologia…</option>
+      </select>
+
+      <button class="btn" id="cert-btn">Gerar Certificado</button>
+    </div>
+
+    <div class="cert-preview" id="cert-preview">
+      <div class="cert-brand">Geo-Explorer</div>
+      <div class="cert-title">Certificado de Conclusão</div>
+      <div class="cert-sub">Certificamos que</div>
+      <div class="cert-name" id="cert-preview-name"></div>
+      <div class="cert-sub">concluiu todos os desafios da trilha</div>
+      <div class="cert-trail" id="cert-preview-trail"></div>
+      <div class="cert-meta" id="cert-preview-meta"></div>
+      <div class="cert-note">⚠️ Este é um certificado fictício gerado para fins de demonstração. Não representa uma credencial oficial.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Geo-Explorer — projeto de portfólio •
+  <a href="https://github.com/belarminon/geo-explorer" target="_blank" rel="noopener">GitHub</a>
+  &nbsp;|&nbsp; Desenvolvido com IBM Bob
+</footer>
+
+<script>
+  const trails = [{"id":"dotnet","name":".NET / C#","levels":["iniciante","intermediario","avancado"],"modules":["Sintaxe C#","ASP.NET Core Web API","Entity Framework Core","Arquitetura Limpa"],"challenges":{"iniciante":"Crie uma API RESTful simples que gerencie uma lista de tarefas (CRUD).","intermediario":"Implemente autenticação JWT em uma Web API ASP.NET Core utilizando ASP.NET Identity.","avancado":"Desenvolva uma arquitetura de microsserviços orientada a eventos utilizando MassTransit e RabbitMQ."}},{"id":"python","name":"Python","levels":["iniciante","intermediario","avancado"],"modules":["Fundamentos","FastAPI / Django","Tratamento de Dados","Testes Unitários"],"challenges":{"iniciante":"Crie um script CLI em Python para organizar arquivos em pastas por extensão.","intermediario":"Construa uma API assíncrona com FastAPI utilizando Pydantic e SQLAlchemy.","avancado":"Crie uma pipeline de processamento de dados usando Pandas e Celery para tarefas assíncronas."}}];
+
+  const icons = { dotnet: '⚙️', python: '🐍' };
+  const levelLabel = { iniciante: 'Iniciante', intermediario: 'Intermediário', avancado: 'Avançado' };
+
+  /* ── helpers ── */
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  function randomHex(len) {
+    return Array.from({ length: len }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  }
+
+  /* ── populate selects ── */
+  ['ch-tech','cert-tech'].forEach(id => {
+    const sel = document.getElementById(id);
+    trails.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.name;
+      sel.appendChild(opt);
+    });
+  });
+
+  /* ── tabs ── */
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  /* ── trails grid ── */
+  const grid = document.getElementById('trails-grid');
+  trails.forEach(trail => {
+    const badges = trail.levels.map(l =>
+      `<span class="card-badge badge-${l}">${levelLabel[l] ?? l}</span>`
+    ).join('');
+    const pills = trail.modules.map(m =>
+      `<span class="module-pill">${esc(m)}</span>`
+    ).join('');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-icon">${icons[trail.id] ?? '📦'}</span>
+        <span class="card-title">${esc(trail.name)}</span>
+      </div>
+      <div>${badges}</div>
+      <div class="card-modules">
+        <p>Módulos</p>
+        ${pills}
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  /* ── challenges ── */
+  const chBtn   = document.getElementById('ch-btn');
+  const chBox   = document.getElementById('challenge-box');
+  const chEmpty = document.getElementById('challenge-empty');
+
+  chBtn.addEventListener('click', () => {
+    const techId = document.getElementById('ch-tech').value;
+    const level  = document.getElementById('ch-level').value;
+    if (!techId || !level) {
+      chBox.classList.remove('visible');
+      chEmpty.textContent = '⚠️ Selecione a tecnologia e o nível antes de continuar.';
+      chEmpty.style.display = 'block';
+      return;
+    }
+    const trail = trails.find(t => t.id === techId);
+    const text  = trail?.challenges[level];
+    if (!text) {
+      chBox.classList.remove('visible');
+      chEmpty.textContent = '⚠️ Desafio não encontrado para esta combinação.';
+      chEmpty.style.display = 'block';
+      return;
+    }
+    document.getElementById('challenge-label').textContent =
+      `${trail.name.toUpperCase()} — ${levelLabel[level] ?? level}`;
+    document.getElementById('challenge-text').textContent = text;
+    chEmpty.style.display = 'none';
+    chBox.classList.add('visible');
+  });
+
+  /* ── certificate ── */
+  document.getElementById('cert-btn').addEventListener('click', () => {
+    const name   = document.getElementById('cert-name').value.trim();
+    const techId = document.getElementById('cert-tech').value;
+    if (!name || !techId) {
+      alert('Preencha seu nome e selecione uma trilha.');
+      return;
+    }
+    const trail = trails.find(t => t.id === techId);
+    const now   = new Date();
+    const date  = now.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    const certId = 'CERT-' + randomHex(7).toUpperCase();
+    const hash   = randomHex(64);
+    const code   = 'GEO-' + hash.slice(0, 12).toUpperCase();
+
+    document.getElementById('cert-preview-name').textContent  = name;
+    document.getElementById('cert-preview-trail').textContent = trail.name;
+    document.getElementById('cert-preview-meta').innerHTML =
+      `Emitido em ${date} &nbsp;·&nbsp; ${certId}<br>
+       Código: ${code}<br>
+       SHA-256: ${hash}`;
+
+    document.getElementById('cert-preview').classList.add('visible');
+    document.getElementById('cert-preview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
+
+</body>
+</html>

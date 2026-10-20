@@ -49,6 +49,17 @@ npm start -- certificate "Seu Nome" dotnet pdf ./meu-certificado.pdf
 
 O progresso é gravado em `.geo-explorer/progress.json` e permanece apenas na máquina local. O certificado inclui identificador, código de verificação e hash SHA-256 para demonstrar verificação de integridade; ele **não é uma credencial oficial**. O HTML pode ser impresso ou salvo como PDF pelo navegador. A opção `pdf` cria um arquivo PDF diretamente.
 
+## Interface Web
+
+O projeto inclui uma interface visual estática em `public/index.html`, pronta para deploy no Vercel.
+
+- **Trilhas** — exibe os planos de estudo com módulos e níveis de cada tecnologia.
+- **Desafios** — permite selecionar tecnologia e nível para ver o desafio de código.
+- **Certificado** — gera um certificado fictício demonstrativo com ID, código de verificação e hash SHA-256.
+
+Para abrir localmente, basta abrir o arquivo `public/index.html` diretamente no navegador. Para publicar no Vercel, conecte o repositório ao painel da Vercel; o `vercel.json` já aponta `outputDirectory` para `public`.
+
+
 ## Servidor MCP
 
 O servidor MCP usa transporte stdio e expõe o recurso `geo-explorer://trails` e as ferramentas `list_trails`, `get_trail`, `generate_challenge`, `complete_challenge`, `get_progress` e `generate_certificate`. As ferramentas reutilizam a base, os desafios e o progresso local da CLI.
@@ -72,6 +83,7 @@ Os testes automatizados cobrem consulta de trilhas, geração de desafios, persi
 
 ## Melhorias realizadas
 
+- Interface web visual estática em `public/index.html` com trilhas, desafios e geração de certificado, pronta para deploy no Vercel.
 - Menu interativo e comandos CLI para consulta, desafios e certificados.
 - Registro local de conclusão e bloqueio de certificado até completar a trilha.
 - Certificados HTML/PDF demonstrativos com hash SHA-256 e verificação de conteúdo.
