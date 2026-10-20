@@ -57,6 +57,8 @@ O projeto inclui uma interface visual estática em `public/index.html`, pronta p
 - **Desafios** — permite selecionar tecnologia e nível para ver o desafio de código.
 - **Certificado** — gera um certificado fictício demonstrativo com ID, código de verificação e hash SHA-256.
 
+🌐 **Deploy:** [https://geo-explorer-dy1n8uqaf-belarminons-projects.vercel.app/](https://geo-explorer-dy1n8uqaf-belarminons-projects.vercel.app/)
+
 Para abrir localmente, basta abrir o arquivo `public/index.html` diretamente no navegador. Para publicar no Vercel, conecte o repositório ao painel da Vercel; o `vercel.json` já aponta `outputDirectory` para `public`.
 
 
